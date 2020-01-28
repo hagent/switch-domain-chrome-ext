@@ -1,0 +1,46 @@
+html {
+  width: 220px;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+.flex-column {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  text-align: center;
+}
+
+.buttons div:last-of-type {
+  margin-bottom: 5px;
+}
+
+button {
+  margin: 2px 5px;
+
+  border: none;
+  background: #858181;
+  color: #ffffff !important;
+  padding: 5px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  display: inline-block;
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+}
+
+button:hover {
+  color: #404040 !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+  background: rgb(146, 146, 239);
+  -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+  -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+  transition: all 0.3s ease 0s;
+}
+
+.health-text {
+  color: rgb(0, 100, 226);
+}
