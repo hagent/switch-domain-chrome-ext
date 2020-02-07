@@ -10,6 +10,8 @@ function curry(fn) {
   };
 }
 
+const identity = x => x;
+
 // map :: Functor f => (a -> b) -> f a -> f b
 const map = curry((fn, f) => f.map(fn));
 
@@ -282,3 +284,42 @@ const maybe = curry((v, f, m) => {
 
   return f(m.$value);
 });
+
+// sequence :: (Applicative f, Traversable t) => (a -> f a) -> t (f a) -> f (t a)
+const sequence = curry((of, f) => f.sequence(of));
+
+class List {
+  constructor(xs) {
+    this.$value = xs;
+  }
+
+  inspect() {
+    return `List(${inspect(this.$value)})`;
+  }
+
+  concat(x) {
+    return new List(this.$value.concat(x));
+  }
+
+  // ----- Pointed List
+  static of(x) {
+    return new List([x]);
+  }
+
+  // ----- Functor List
+  map(fn) {
+    return new List(this.$value.map(fn));
+  }
+
+  // ----- Traversable List
+  sequence(of) {
+    return this.traverse(of, identity);
+  }
+
+  traverse(of, fn) {
+    return this.$value.reduce(
+      (f, a) => fn(a).map(b => bs => bs.concat(b)).ap(f),
+      of(new List([])),
+    );
+  }
+}

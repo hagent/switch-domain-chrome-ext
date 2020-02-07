@@ -4,7 +4,7 @@ function getCurrentTab(callback) {
   return chrome.tabs.getSelected(null, callback);
 }
 
-const createNewTabTask = url => new IO(() => chrome.tabs.create({ url }));
+const createNewTabIO = url => new IO(() => chrome.tabs.create({ url }));
 
 const getTabId = safeProp("id");
 const getTabUrl = safeProp("url");
@@ -14,19 +14,12 @@ const getEventUrlEnd = compose(chain(getUrlEnd), getTabUrl);
 const getCurrentTabTask = () =>
   new Task((_, resolve) => getCurrentTab(resolve));
 
-const redirectFromTab = redirectionUrlPrefix => {
-  
+const redirect = redirectionUrlPrefix => {
   return compose(
-    // todo ¯\_(ツ)_/¯ something with types
-    x =>
-      x.fork(
-        console.warn,
-        maybe(null, x => x.unsafePerformIO())
-      ),
-    map(map(createNewTabTask)),
-    map(map(prepand(redirectionUrlPrefix))),
-    map(getEventUrlEnd),
-    getCurrentTabTask
+    map(map(createNewTabIO)), // Task Maybe IO
+    map(map(prepand(redirectionUrlPrefix))), // Task Maybe String
+    map(getEventUrlEnd), // Task Maybe String
+    getCurrentTabTask // Task Object
   );
 };
 
@@ -71,14 +64,32 @@ const getHashAndTag = compose(
   safeReExec(/gitHash=(.*?), ciBuildTag=(.*?),/)
 );
 
+const loadAndSetHealthCheckStatus = compose(
+  map(map(setHealthCheckHashAndTagIO)), // Task Maybe IO
+  map(join), // Task Maybe Object // collapse 2 Maybe
+  traverse(Task.of, map(getHashAndTag)), // Task Maybe Maybe Object
+  map(getHealthCheckTask), // Maybe Task String
+  getHealthCheckUrl // Maybe String
+);
+
 // not pure
 
 document.addEventListener("DOMContentLoaded", onLoad, false);
 
+const redirectExecute = urlPrefix =>
+  compose(
+    x =>
+      x.fork(
+        console.warn,
+        maybe(null, x => x.unsafePerformIO())
+      ),
+    redirect(urlPrefix)
+  );
+
 function onLoad() {
   const buttons = Object.entries(SETTINGS.buttons).map(([name, urlPrefix]) => {
     const btn = document.createElement("button");
-    btn.addEventListener("click", redirectFromTab(urlPrefix), false);
+    btn.addEventListener("click", redirectExecute(urlPrefix), false);
     btn.textContent = "-> " + name;
     return btn;
   });
@@ -86,8 +97,8 @@ function onLoad() {
   loadHealthCheck();
 }
 
-const setHealthCheckHashAndTagIO = ({ hash, tag, healthCheckUrl }) =>
-  new IO(() => {
+function setHealthCheckHashAndTagIO({ hash, tag }) {
+  return new IO(() => {
     const tagEl = document.getElementById("healthCheckTag");
     tagEl.textContent = tag;
     // todo refactor
@@ -103,21 +114,18 @@ const setHealthCheckHashAndTagIO = ({ hash, tag, healthCheckUrl }) =>
     hashEl.href = "https://git.tmaws.io/tm/tmol-web-spring/commit/" + hash;
     setTimeout(loadHealthCheck, STATUS_REFRESH_TIMEOUT);
   });
+}
 
-const loadAndSetHealthCheckStatus = compose(
-  map(t =>
+const loadAndSetHealthCheckStatusExecute = compose(
+  // Task Maybe IO ->
+  t =>
     t.fork(
       console.warn,
-      map(x => x.unsafePerformIO())
-    )
-  ),
-  map(map(map(setHealthCheckHashAndTagIO))), // todo ¯\_(ツ)_/¯ something with types
-  map(map(getHashAndTag)),
-  map(getHealthCheckTask),
-  getHealthCheckUrl
+      maybe(null, x => x.unsafePerformIO())
+    ),
+  loadAndSetHealthCheckStatus
 );
 
 const loadHealthCheck = () => {
-  // todo use task?
-  getCurrentTab(loadAndSetHealthCheckStatus);
+  getCurrentTab(loadAndSetHealthCheckStatusExecute);
 };
