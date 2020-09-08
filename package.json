@@ -4,20 +4,7 @@
   },
   "standard": {
     "globals": [ 
-      "TODO webpack", 
-      "map", 
-      "chrome",
-      "safeProp",
-      "compose",
-      "safeHead",
-      "safeReExec",
-      "chain",
-      "prepand",
-      "SETTINGS",
-      "Task",
-      "maybe",
-      "curry",
-      "IO"
+      "chrome"
     ]
   }
 }

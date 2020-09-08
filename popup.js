@@ -1,3 +1,8 @@
+import { buttons } from './settings.js'
+import { IO } from './IO.js'
+import { Task } from './Task.js'
+import { safeProp, curry, map, compose, maybe } from './utils.js'
+
 function getCurrentTab (callback) {
   return chrome.tabs.getSelected(null, callback)
 }
@@ -21,7 +26,6 @@ const redirect = redirectionUrlPrefix =>
     getCurrentTabTask // Task Object
   )
 
-
 // not pure
 
 document.addEventListener('DOMContentLoaded', onLoad, false)
@@ -37,11 +41,11 @@ const redirectExecute = urlPrefix =>
   )
 
 function onLoad () {
-  const buttons = Object.entries(SETTINGS.buttons).map(([name, urlPrefix]) => {
+  const buttonsElements = Object.entries(buttons).map(([name, urlPrefix]) => {
     const btn = document.createElement('button')
     btn.addEventListener('click', redirectExecute(urlPrefix), false)
     btn.textContent = '-> ' + name
     return btn
   })
-  buttons.forEach(btn => document.getElementById('buttons').appendChild(btn))
+  buttonsElements.forEach(btn => document.getElementById('buttons').appendChild(btn))
 }
