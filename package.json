@@ -1,10 +1,30 @@
 {
   "devDependencies": {
-    "standard": "^14.3.4"
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "prettier-eslint": "^11.0.0"
   },
-  "standard": {
-    "globals": [ 
-      "chrome"
-    ]
-  }
+  "eslintConfig": {
+    "extends": [
+      "airbnb"
+    ],
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "chrome": "readonly"
+    },
+    "rules": {
+      "max-len": 0,
+      "no-console": 0,
+      "import/extensions": 0,
+      "import/prefer-default-export": 0
+    }
+  },
+  "dependencies": {}
 }
