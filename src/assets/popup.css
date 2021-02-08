@@ -57,3 +57,8 @@ button:hover {
 .hidden {
     display: none;
 }
+
+.header {
+    text-align: center;
+    color: rgb(13, 131, 170);
+}
