@@ -6,16 +6,16 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "wrenchLogo.png",
-    "default_popup": "popup.html"
+    "default_icon": "src/assets/wrenchLogo.png",
+    "default_popup": "src/assets/popup.html"
   },
   "content_scripts": [
     {
       "matches1": ["https://*/*/transaction/payment-selection"],
       "matches": ["<all_urls>"],
       "js": [
-        "parsePayoutMethods.js",
-        "readerView.js"
+        "src/parsePayoutMethods.js",
+        "src/readerView.js"
       ],
       "run_at": "document_end"
     }
