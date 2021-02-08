@@ -62,9 +62,9 @@ function onLoad() {
   setIsWebRelaunch();
   Object.entries(redirectButtons)
     .forEach(([name, urlPrefix]) => createButton(`-> ${name}`, redirectExecute(urlPrefix)));
-  createButton('Calculation - Stage', () => openCalculation(STAGING));
-  createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
-  initReaderView();
+  // createButton('Calculation - Stage', () => openCalculation(STAGING));
+  // createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
+  // initReaderView();
 }
 
 document.addEventListener('DOMContentLoaded', onLoad, false);
