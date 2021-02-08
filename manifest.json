@@ -6,15 +6,24 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "wrenchLogo.png",
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*/transaction/payment-selection"],
-      "js": ["contentScript.js"],
+      "matches1": ["https://*/*/transaction/payment-selection"],
+      "matches": ["<all_urls>"],
+      "js": [
+        "parsePayoutMethods.js",
+        "readerView.js"
+      ],
       "run_at": "document_end"
     }
   ],
-  "permissions": ["activeTab"]
+  "permissions": [
+    "activeTab", 
+    "cookies",
+    "tabs",
+    "http://*/*", "https://*/*" 
+  ]
 }
