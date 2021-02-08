@@ -14,8 +14,8 @@
       "matches1": ["https://*/*/transaction/payment-selection"],
       "matches": ["<all_urls>"],
       "js": [
-        "src/parsePayoutMethods.js",
-        "src/readerView.js"
+        "src/parsePayoutMethodsContentScript.js",
+        "src/readerViewContentScript.js"
       ],
       "run_at": "document_end"
     }
