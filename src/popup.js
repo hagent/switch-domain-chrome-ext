@@ -2,25 +2,18 @@ import { redirectButtons } from './settings.js';
 import { IO } from './IO.js';
 import { Task } from './task.js';
 import {
-  safeProp, curry, map, compose, maybe,
+  curry, map, compose, maybe,
 } from './fnUtils.js';
 import { getCalculation } from './generateCybersourceSession.js';
-import { createButton } from './utils.js';
+import { createButton, getCurrentTabTask, getTabUrl } from './utils.js';
 import { initReaderView } from './readerViewPopup.js';
 import { setIsWebRelaunch } from './webRelaunch.js';
+import { loadHealthCheck } from './version.js';
 
 const LOCALHOST = 'https://localhost:3443';
 const STAGING = 'https://staging.worldremit.com';
 
-function getCurrentTab(callback) {
-  return chrome.tabs.getSelected(null, callback);
-}
-
 const createNewTabIO = (url) => new IO(() => chrome.tabs.create({ url }));
-
-const getTabUrl = safeProp('url');
-
-const getCurrentTabTask = () => new Task((_, resolve) => getCurrentTab(resolve));
 
 const createUrl = (url) => new URL(url);
 const replaceUrlBeg = curry((redirectionUrlPrefix, url) => url.href.replace(url.origin, redirectionUrlPrefix));
@@ -65,6 +58,7 @@ function onLoad() {
   createButton('Calculation - Stage', () => openCalculation(STAGING));
   createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
   initReaderView();
+  loadHealthCheck();
 }
 
 document.addEventListener('DOMContentLoaded', onLoad, false);

@@ -34,7 +34,6 @@ async function toggleReaderView() {
 
 function updateReaderViewButton() {
   state.readButton.className = '';
-  state.readButton.classList.remove('hidden');
   if (state.readerViewState !== 'off') {
     state.readButton.classList.add('active-button');
   }

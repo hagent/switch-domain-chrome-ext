@@ -40,6 +40,7 @@ if (el) {
     parsed = JSON.parse(m[1]).calculationDetails.calculation.paymentMethods;
   } catch (e) {
     console.warn("__INITIAL_STATE__ parse error", e);
+    return;
   }
 
   const methods = parsed ?? defaultMethods;

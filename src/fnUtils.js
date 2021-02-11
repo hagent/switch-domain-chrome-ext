@@ -207,6 +207,10 @@ export class Maybe {
     return new Maybe(x);
   }
 
+  static nothing() {
+    return Maybe.of();
+  }
+
   // ----- Functor Maybe
   map(fn) {
     return this.isNothing ? this : Maybe.of(fn(this.$value));
@@ -319,3 +323,8 @@ export class List {
     );
   }
 }
+
+export const tap = (label) => (x) => {
+  console.log(label, inspect(x));
+  return x;
+};
