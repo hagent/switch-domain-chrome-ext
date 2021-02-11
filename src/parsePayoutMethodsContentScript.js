@@ -29,35 +29,39 @@ const defaultMethods = [
   },
 ];
 
-const el = [...document.querySelectorAll("body > script")]
-  .map((x) => x.textContent)
-  .find((x) => x.includes("__INITIAL_STATE__"));
+function parsePayoutMethods() {
+  const el = [...document.querySelectorAll("body > script")]
+    .map((x) => x.textContent)
+    .find((x) => x.includes("__INITIAL_STATE__"));
 
-if (el) {
-  const m = el.match(/__INITIAL_STATE__ *= *(.*);/) ?? [];
-  let parsed = null;
-  try {
-    parsed = JSON.parse(m[1]).calculationDetails.calculation.paymentMethods;
-  } catch (e) {
-    console.warn("__INITIAL_STATE__ parse error", e);
-    return;
+  if (el) {
+    const m = el.match(/__INITIAL_STATE__ *= *(.*);/) ?? [];
+    let parsed = null;
+    try {
+      parsed = JSON.parse(m[1]).calculationDetails.calculation.paymentMethods;
+    } catch (e) {
+      console.warn("__INITIAL_STATE__ parse error", e);
+      return;
+    }
+
+    const methods = parsed ?? defaultMethods;
+
+    const elements = [...document.querySelectorAll("[name=payment-method]")];
+    elements.forEach((el) => {
+      const newel = document.createElement("div");
+      const id = Number(el.id.replace("payment-method-", ""));
+      const method = methods.find((x) => x.id === id);
+      const text = method ? `${id} (${method.code})` : id;
+      newel.innerText = text;
+      el.parentNode.appendChild(newel);
+      el.parentNode.position = "relative";
+      newel.style.color = "green";
+      newel.style.position = "absolute";
+      newel.style.top = "0";
+      newel.style.left = "5px";
+      newel.style["font-weight"] = "bold";
+    });
   }
-
-  const methods = parsed ?? defaultMethods;
-
-  const elements = [...document.querySelectorAll("[name=payment-method]")];
-  elements.forEach((el) => {
-    const newel = document.createElement("div");
-    const id = Number(el.id.replace("payment-method-", ""));
-    const method = methods.find((x) => x.id === id);
-    const text = method ? `${id} (${method.code})` : id;
-    newel.innerText = text;
-    el.parentNode.appendChild(newel);
-    el.parentNode.position = "relative";
-    newel.style.color = "green";
-    newel.style.position = "absolute";
-    newel.style.top = "0";
-    newel.style.left = "5px";
-    newel.style["font-weight"] = "bold";
-  });
 }
+
+parsePayoutMethods();
