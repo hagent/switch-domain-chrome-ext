@@ -8,7 +8,7 @@ import { getCalculation } from './generateCybersourceSession.js';
 import { createButton, getCurrentTabTask, getTabUrl } from './utils.js';
 import { initReaderView } from './readerViewPopup.js';
 import { setIsWebRelaunch } from './webRelaunch.js';
-import { loadHealthCheck } from './version.js';
+import { loadHealthCheck } from './cmsStatus.js';
 
 const LOCALHOST = 'https://localhost:3443';
 const STAGING = 'https://staging.worldremit.com';
@@ -55,8 +55,8 @@ function onLoad() {
   setIsWebRelaunch();
   Object.entries(redirectButtons)
     .forEach(([name, urlPrefix]) => createButton(`-> ${name}`, redirectExecute(urlPrefix)));
-  createButton('Calculation - Stage', () => openCalculation(STAGING));
-  createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
+  // createButton('Calculation - Stage', () => openCalculation(STAGING));
+  // createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
   initReaderView();
   loadHealthCheck();
 }

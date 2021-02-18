@@ -62,12 +62,3 @@ button:hover {
     text-align: center;
     color: rgb(13, 131, 170);
 }
-
-.version {
-    color: grey;
-    margin-bottom: 8px;
-}
-
-.version a {
-    color: rgb(126, 126, 238);
-}

@@ -65,9 +65,11 @@ export async function initReaderView() {
   });
 
   const tab = await getCurrentTabPromise();
-  chrome.tabs.sendMessage(tab.id, { type: 'getReaderViewState' }, (readerViewState) => {
-    state.readerViewState = readerViewState;
-    state.readButton = createButton('', () => toggleReaderView());
-    updateReaderViewButton();
-  });
+  if (tab.url.startsWith('http')) {
+    chrome.tabs.sendMessage(tab.id, { type: 'getReaderViewState' }, (readerViewState) => {
+      state.readerViewState = readerViewState;
+      state.readButton = createButton('', () => toggleReaderView());
+      updateReaderViewButton();
+    });
+  }
 }

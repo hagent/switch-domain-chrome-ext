@@ -36,4 +36,8 @@ export class Task {
   join() {
     return this.chain(identity);
   }
+
+  static fromPromise(promise) {
+    return new Task((reject, resolve) => promise.then(resolve).catch(reject));
+  }
 }

@@ -5,17 +5,17 @@
     <script type="module" src="../popup.js"></script>
     <link href="popup.css" rel="stylesheet" />
     <link href="toggle.css" rel="stylesheet" />
+    <link href="cmsStatus.css" rel="stylesheet" />
   </head>
   <body>
     <h1 class="header">WR</h1>
     <div class="flex-column">
       <div class='version'>
-        <span id="healthCheckTag" class="health-text"></span>
-        <a
-          id="healthCheckHash"
-          class="health-text"
-          ></a
-        >
+
+        <div class="tooltip health-text">
+          <span id="version" class="health-text"></span>
+          <span id="allVersionsTooltip" class="tooltiptext"></span>
+        </div>
       </div>
 
       <div id="buttons" class="flex-column"></div>

@@ -318,7 +318,9 @@ export class List {
 
   traverse(of, fn) {
     return this.$value.reduce(
-      (f, a) => fn(a).map((b) => (bs) => bs.concat(b)).ap(f),
+      (f, a) => fn(a)
+        .map((b) => (bs) => bs.concat(b))
+        .ap(f),
       of(new List([])),
     );
   }
@@ -328,3 +330,5 @@ export const tap = (label) => (x) => {
   console.log(label, inspect(x));
   return x;
 };
+export const mtap = (label) => map(tap(label));
+export const mmtap = (label) => map(map(tap(label)));
