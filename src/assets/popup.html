@@ -1,7 +1,10 @@
+
+
 <!DOCTYPE html>
 <html>
   <head>
-    <title>TM redirector</title>
+    <title>WR help ext</title>
+    <meta charset="UTF-8">
     <script type="module" src="../popup.js"></script>
     <link href="popup.css" rel="stylesheet" />
     <link href="toggle.css" rel="stylesheet" />
@@ -10,8 +13,12 @@
   <body>
     <h1 class="header">WR</h1>
     <div class="flex-column">
-      <div class='version'>
 
+      <span id="no-connection" class="hidden no-connection">
+        ⛔️ No connection! Is vpn on?
+      </span>
+
+      <div id="version_wrap" class='version'>
         <div class="tooltip health-text">
           <span id="version" class="health-text"></span>
           <span id="allVersionsTooltip" class="tooltiptext"></span>

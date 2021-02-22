@@ -21,12 +21,13 @@ const getVersionPromise = async (versionUrl) => (await fetch(versionUrl)).json()
 const getVersionTask = (versionUrl) => Task.fromPromise(getVersionPromise(versionUrl));
 
 function getStatusMarkup({ commit, tag }) {
-  return `${tag} - <a class="health-text" href="https://github.com/Worldremit/cms/commit/${commit}">${commit}</a>`;
+  return `${tag} - <a target="_blank" class="health-text" href="https://github.com/Worldremit/cms/commit/${commit}">${commit}</a>`;
 }
+
 function getStatusListItemMarkup({ env, commit, tag }) {
   return `
     <div class="env-status">
-      ${env}: ${tag} - <a class="health-text" href="https://github.com/Worldremit/cms/commit/${commit}">${commit}</a>
+      ${env}: ${getStatusMarkup({ commit, tag })}
     </div>
   `;
 }
@@ -40,7 +41,7 @@ const loadVersionForCurrentEnvOrDevTask = compose(
 
 const urlLense = lensProp('url');
 
-const boxObjInTask_ = (promiseProp, resProp, obj) => obj[promiseProp]
+const boxObjInTask_ = (taskProp, resProp, obj) => obj[taskProp]
   .map((res) => ({
     ...obj,
     [resProp]: res,
@@ -53,8 +54,9 @@ const loadVersionsForAllEnvs = compose(
   map(map((x) => ({ ...x, ...x.version }))),
   sequence(Task.of), // Task List Object
   (x) => new List(x), // List Task Object
+  // extract task Task object Object { url: Task, ...rest } -> Task Object { version: TaskResult, ...rest }
   map(boxObjInTask('url', 'version')), // Array Task Object
-  map(over(urlLense, getVersionTask)),
+  map(over(urlLense, getVersionTask)), // Array Object { url: Task, ...rest } // put getVersionTask into url prop
 );
 
 // not pure
@@ -63,10 +65,18 @@ function setHtml(id, markup) {
   document.getElementById(id).innerHTML = markup;
 }
 
+function show(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function hide(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
 const loadAndSetAllEnvsTooltip = compose(
   // Task ->
   (t) => t.fork(
-    console.warn,
+    () => console.warn,
     (allVersionsHtml) => {
       console.log({ allVersionsHtml });
       setHtml('allVersionsTooltip', allVersionsHtml);
@@ -79,7 +89,10 @@ export const loadHealthCheck = () => {
   getCurrentTabPromise()
     .then(loadVersionForCurrentEnvOrDevTask)
     .then((t) => t.fork(
-      console.warn,
+      () => {
+        show('no-connection');
+        hide('version_wrap');
+      },
       (currentVersionHtml) => setHtml('version', currentVersionHtml),
     ));
   loadAndSetAllEnvsTooltip([
