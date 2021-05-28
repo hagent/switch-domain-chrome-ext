@@ -1,11 +1,17 @@
 import { lensProp, over, sequence } from '../node_modules/ramda/es/index.js';
 import {
   compose, List, map, curry,
-} from './fnUtils.js';
-import { Task } from './task.js';
-import { getCurrentTabPromise } from './utils.js';
+} from './utils/fnUtils.js';
+import { Task } from './utils/task.js';
+import { getCurrentTabPromise } from './utils/utils.js';
 
-const replaceHost = (host) => (host.includes('worldremit.com') && host !== 'www.develop.staging.worldremit.com'
+const ENV_HOSTS = [
+  'www.staging.worldremit.com',
+  'www.worldremit.com',
+  'e2e-cms.wremitprd.com',
+];
+
+const replaceHost = (host) => (ENV_HOSTS.includes(host)
   ? host
   : 'cms.wremitdev.com');
 
@@ -16,6 +22,7 @@ const getVersionUrl = (
 const getDevVersionUrl = () => getVersionUrl();
 const getStageVersionUrl = () => getVersionUrl('www.staging.worldremit.com');
 const getProdVersionUrl = () => getVersionUrl('www.worldremit.com');
+const getE2EVersionUrl = () => getVersionUrl('e2e-cms.wremitprd.com');
 
 const getVersionPromise = async (versionUrl) => (await fetch(versionUrl)).json();
 const getVersionTask = (versionUrl) => Task.fromPromise(getVersionPromise(versionUrl));
@@ -78,7 +85,6 @@ const loadAndSetAllEnvsTooltip = compose(
   (t) => t.fork(
     () => console.warn,
     (allVersionsHtml) => {
-      console.log({ allVersionsHtml });
       setHtml('allVersionsTooltip', allVersionsHtml);
     },
   ),
@@ -99,5 +105,6 @@ export const loadHealthCheck = () => {
     { env: 'dev', url: getDevVersionUrl() },
     { env: 'stage', url: getStageVersionUrl() },
     { env: 'prod', url: getProdVersionUrl() },
+    { env: 'e2e', url: getE2EVersionUrl() },
   ]);
 };

@@ -1,14 +1,15 @@
 import { redirectButtons } from './settings.js';
-import { IO } from './IO.js';
-import { Task } from './task.js';
+import { IO } from './utils/IO.js';
+import { Task } from './utils/task.js';
 import {
   curry, map, compose, maybe,
-} from './fnUtils.js';
+} from './utils/fnUtils.js';
 import { getCalculation } from './generateCybersourceSession.js';
-import { createButton, getCurrentTabTask, getTabUrl } from './utils.js';
+import { createButton, getCurrentTabTask, getTabUrl } from './utils/utils.js';
 import { initReaderView } from './readerViewPopup.js';
 import { setIsWebRelaunch } from './webRelaunch.js';
 import { loadHealthCheck } from './cmsStatus.js';
+import { initOnlineVSCode } from './onlineVSCode.js';
 
 const LOCALHOST = 'https://localhost:3443';
 const STAGING = 'https://staging.worldremit.com';
@@ -54,11 +55,12 @@ function openCalculation(host) {
 function onLoad() {
   setIsWebRelaunch();
   Object.entries(redirectButtons)
-    .forEach(([name, urlPrefix]) => createButton(`-> ${name}`, redirectExecute(urlPrefix)));
+    .forEach(([name, urlPrefix]) => createButton(`→ ${name}`, redirectExecute(urlPrefix)));
   // createButton('Calculation - Stage', () => openCalculation(STAGING));
   // createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
   initReaderView();
   loadHealthCheck();
+  initOnlineVSCode(createButton);
 }
 
 document.addEventListener('DOMContentLoaded', onLoad, false);

@@ -1,4 +1,4 @@
-import { getCurrentTabPromise } from './utils.js';
+import { getCurrentTabPromise } from './utils/utils.js';
 
 const WEB_RELAUNCH_COOKIE_NAME = 'Eg9be';
 
@@ -17,7 +17,6 @@ function toggleWebRelaunch(event, tab) {
           value: event.target.checked ? '1' : '0',
         },
         () => {
-          console.log('yeah all set');
           chrome.tabs.reload();
         },
       );
@@ -26,14 +25,9 @@ function toggleWebRelaunch(event, tab) {
 }
 
 function setInitState(cookies, domain, toggle) {
-  console.log('is it your cookies', cookies);
   const foundCookies = cookies.filter(
     (c) => c.domain === domain && c.value === '1',
   );
-  console.log('cookies length', {
-    length: foundCookies.length,
-    foundCookies,
-  });
   toggle.checked = foundCookies.length > 0;
 }
 

@@ -1,4 +1,4 @@
-import { createButton, getCurrentTabPromise } from './utils.js';
+import { createButton, getCurrentTabPromise } from './utils/utils.js';
 
 const state = {
   readerViewState: 'off',
@@ -66,7 +66,9 @@ export async function initReaderView() {
 
   const tab = await getCurrentTabPromise();
   if (tab.url.startsWith('http')) {
+    console.log('getReaderViewState');
     chrome.tabs.sendMessage(tab.id, { type: 'getReaderViewState' }, (readerViewState) => {
+      console.log('getReaderViewState answer');
       state.readerViewState = readerViewState;
       state.readButton = createButton('', () => toggleReaderView());
       updateReaderViewButton();
