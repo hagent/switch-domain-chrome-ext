@@ -1,4 +1,4 @@
-import { redirectButtons } from './settings.js';
+import { redirectButtons } from '../settings.js';
 import { IO } from './utils/IO.js';
 import { Task } from './utils/task.js';
 import {
