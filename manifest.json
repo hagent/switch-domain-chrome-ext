@@ -1,20 +1,18 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "Switch domain",
-  "description": "This chrome extenstion is for devlopers to be able to switch domain. To run the same url of web application on different environments.",
+  "description": "This chrome extension is for developers to be able to switch domain. To run the same url of web application on different environments.",
   "version": "1.0",
 
-  "browser_action": {
+  "action": {
     "default_icon": "src/assets/wrenchLogo.png",
     "default_popup": "src/assets/popup.html"
   },
   "content_scripts": [
     {
-      "matches1": ["https://*/*/transaction/payment-selection"],
       "matches": ["<all_urls>"],
       "js": [
-        "src/parsePayoutMethodsContentScript.js",
         "src/readerViewContentScript.js"
       ],
       "run_at": "document_end"
@@ -23,7 +21,10 @@
   "permissions": [
     "activeTab", 
     "cookies",
-    "tabs",
-    "http://*/*", "https://*/*" 
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://*/*", 
+    "https://*/*"
   ]
 }

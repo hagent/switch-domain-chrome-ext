@@ -3,7 +3,9 @@ import { Task } from './task.js';
 
 export function getCurrentTabPromise() {
   return new Promise((resolve) => {
-    chrome.tabs.getSelected(null, resolve);
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      resolve(tabs[0]);
+    });
   });
 }
 
@@ -16,7 +18,9 @@ export function createButton(name, clickHandler) {
 }
 
 export function getCurrentTab(callback) {
-  return chrome.tabs.getSelected(null, callback);
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    callback(tabs[0]);
+  });
 }
 
 export const getCurrentTabTask = () => new Task((_, resolve) => getCurrentTab(resolve));

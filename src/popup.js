@@ -4,20 +4,22 @@ import { Task } from './utils/task.js';
 import {
   curry, map, compose, maybe,
 } from './utils/fnUtils.js';
-import { getCalculation } from './generateCybersourceSession.js';
 import { createButton, getCurrentTabTask, getTabUrl } from './utils/utils.js';
 import { initReaderView } from './readerViewPopup.js';
-import { setIsWebRelaunch } from './webRelaunch.js';
-import { loadHealthCheck } from './cmsStatus.js';
-import { initOnlineVSCode } from './onlineVSCode.js';
 
-const LOCALHOST = 'https://localhost:3443';
-const STAGING = 'https://staging.worldremit.com';
 
 const createNewTabIO = (url) => new IO(() => chrome.tabs.create({ url }));
 
 const createUrl = (url) => new URL(url);
-const replaceUrlBeg = curry((redirectionUrlPrefix, url) => url.href.replace(url.origin, redirectionUrlPrefix));
+const replaceUrlBeg = curry((redirectionUrlPrefix, url) => {
+  const newUrl = new URL(url.href.replace(url.origin, redirectionUrlPrefix));
+  if (redirectionUrlPrefix.startsWith('http://localhost')) {
+    newUrl.pathname = newUrl.pathname.replace('/contact-center', '');
+  } else if (url.origin.startsWith('http://localhost')) {
+    newUrl.pathname = '/contact-center' + newUrl.pathname;
+  }
+  return newUrl.href;
+});
 const replaceUrlDomain = (redirectionUrlPrefix) => compose(replaceUrlBeg(redirectionUrlPrefix), createUrl);
 
 const redirect = (redirectionUrlPrefix) => compose(
@@ -27,13 +29,6 @@ const redirect = (redirectionUrlPrefix) => compose(
   getCurrentTabTask, // Task Object
 );
 
-const getCalculationUrl = curry(
-  (host, calculationId) => `${host}/en/calculation/${calculationId}`,
-);
-const openUrlTask = (url) => new Task((rej, res) => {
-  chrome.tabs.create({ url });
-  res();
-});
 
 // not pure
 
@@ -45,22 +40,10 @@ const redirectExecute = (urlPrefix) => compose(
   redirect(urlPrefix),
 );
 
-function openCalculation(host) {
-  getCalculation()
-    .then(getCalculationUrl(host))
-    .then(openUrlTask)
-    .then((task) => task.fork(console.error, console.log));
-}
-
 function onLoad() {
-  setIsWebRelaunch();
   Object.entries(redirectButtons)
     .forEach(([name, urlPrefix]) => createButton(`→ ${name}`, redirectExecute(urlPrefix)));
-  // createButton('Calculation - Stage', () => openCalculation(STAGING));
-  // createButton('Calculation - Localhost', () => openCalculation(LOCALHOST));
   initReaderView();
-  loadHealthCheck();
-  initOnlineVSCode(createButton);
 }
 
 document.addEventListener('DOMContentLoaded', onLoad, false);
